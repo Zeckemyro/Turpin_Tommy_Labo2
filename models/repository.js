@@ -211,7 +211,7 @@ class Repository {
             }
             // todo sort
             for(let key of sortKeys){
-                filteredAndSortedObjects[key.key].sort(this.innerCompare(a, b)); // ?
+                filteredAndSortedObjects[key.key].sort(this.compare(a, b)); // ?
             }
             if(!sortKeys.asc)
                 sortKeys.reverse();
@@ -237,6 +237,22 @@ class Repository {
             return x.localeCompare(y);
         else
             return this.compareNum(x, y);
+    }
+    compare(itemX, itemY) {
+        let fieldIndex = 0;
+        let max = this.sortFields.length;
+        do {
+            let result = 0;
+            if (this.sortFields[fieldIndex].ascending)
+                result = this.innerCompare(itemX[this.sortFields[fieldIndex].name], itemY[this.sortFields[fieldIndex].name]);
+            else
+                result = this.innerCompare(itemY[this.sortFields[fieldIndex].name], itemX[this.sortFields[fieldIndex].name]);
+            if (result == 0)
+                fieldIndex++;
+            else
+                return result;
+        } while (fieldIndex < max);
+        return 0;
     }
 }
 
